@@ -37,7 +37,7 @@ npm install typescript   # if not installed
 ./test.sh
 ```
 
-## Known Limitation
+## Known Limitation: Arrays
 
 Arrays break assignability. TypeScript treats `readonly T[]` as incompatible with `T[]` because arrays have mutating methods (push, pop, etc). This is a TypeScript design decision, not a solution flaw.
 
