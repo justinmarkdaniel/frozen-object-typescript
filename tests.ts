@@ -1,8 +1,11 @@
 // ===========================================
 // FrozenObject<T> - Tests
 // ===========================================
-// This file demonstrates compile-time errors for mutations
-// AND documents the array limitation.
+// NOTE: This file should NOT compile successfully.
+// Run `npx tsc tests.ts` and you should see 3 errors.
+//
+// This file is intentionally broken - it contains mutations that
+// TypeScript should reject. If this compiles, something's wrong!
 
 type FrozenObject<T> = {
   readonly [K in keyof T]: T[K] extends object
@@ -13,8 +16,10 @@ type FrozenObject<T> = {
 };
 
 // ===========================================
-// TEST: Mutations are blocked (all 3 should error)
+// TEST: Mutations are blocked
 // ===========================================
+// These assignments should all fail to compile.
+// We're testing that readonly works at every nesting level.
 
 interface User {
   name: string;
@@ -34,25 +39,25 @@ const frozen: FrozenObject<User> = {
   },
 };
 
-// These lines SHOULD produce compile-time errors:
-frozen.name = "Bob";                    // Level 1: direct property
-frozen.address.city = "LA";             // Level 2: nested property
-frozen.address.coordinates.lat = 0;     // Level 3: deeply nested property
+// All three of these should show red squiggles in your editor:
+frozen.name = "Bob";                    // top-level property
+frozen.address.city = "LA";             // one level deep
+frozen.address.coordinates.lat = 0;     // two levels deep
 
 // ===========================================
 // KNOWN LIMITATION: Arrays
 // ===========================================
 // The solution works for objects but NOT arrays.
-// TypeScript treats `readonly T[]` as incompatible with `T[]`
-// because arrays have mutating methods (push, pop, etc).
+// TypeScript won't let us assign a readonly array to a mutable one
+// because arrays have methods like push() and pop() that would mutate.
 //
-// Example that would fail:
+// Here's what happens if you try to use arrays:
 //
 //   interface WithArray { items: string[] }
 //   const frozen: FrozenObject<WithArray> = { items: ["a"] };
 //   function mutate(obj: WithArray) { obj.items.push("b"); }
-//   mutate(frozen);  // ❌ Error: readonly string[] not assignable to string[]
+//   mutate(frozen);  // Error: readonly string[] not assignable to string[]
 //
-// This is a fundamental TypeScript limitation, not a solution flaw.
+// This is just how TypeScript handles arrays - not something we can work around.
 
 export {};

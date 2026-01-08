@@ -33,7 +33,7 @@ if npx tsc solution.ts --target ES2020 --module commonjs --strict 2>&1; then
     echo ""
     echo -e "${GREEN}✓ COMPILES WITHOUT ERRORS${NC}"
     echo ""
-    echo "This proves: FrozenObject<User> can be assigned to User"
+    echo "This means FrozenObject<User> works as a drop-in for regular User"
 else
     echo ""
     echo -e "${RED}✗ COMPILATION FAILED${NC}"
@@ -60,7 +60,7 @@ if [ $EXIT_CODE -ne 0 ]; then
     echo ""
     echo -e "${GREEN}✓ CORRECTLY REJECTED - All 3 mutations blocked!${NC}"
     echo ""
-    echo "This proves: readonly works at ALL nesting levels"
+    echo "Readonly protection goes all the way down, no matter how deep"
 else
     echo -e "${RED}✗ SHOULD HAVE FAILED - mutations were allowed!${NC}"
 fi
@@ -88,8 +88,8 @@ echo "     (just FrozenObject<T>)"
 echo ""
 echo "Known limitation:"
 echo ""
-echo "  ⚠ Arrays break assignability"
-echo "    (TypeScript limitation, not solution flaw)"
+echo "  ⚠ Arrays don't work with this approach"
+echo "    (This is a TypeScript quirk, not a bug in the solution)"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""

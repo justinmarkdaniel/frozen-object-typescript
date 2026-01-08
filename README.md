@@ -20,7 +20,7 @@ type FrozenObject<T> = {
 };
 ```
 
-This works because TypeScript's `readonly` is covariant—readonly types can be assigned to mutable types, but not vice versa.
+This works because TypeScript lets you assign readonly values into mutable spots (called "covariance"). The reverse isn't allowed.
 
 ## Files
 
@@ -39,8 +39,8 @@ npm install typescript   # if not installed
 
 ## Known Limitation: Arrays
 
-Arrays break assignability. TypeScript treats `readonly T[]` as incompatible with `T[]` because arrays have mutating methods (push, pop, etc). This is a TypeScript design decision, not a solution flaw.
+Arrays don't work with this approach. TypeScript treats `readonly T[]` as incompatible with `T[]` because arrays have mutating methods like push() and pop(). This is just how TypeScript handles arrays - not something we can work around.
 
-## Not for production or live use
+## A Note on Production Use
 
-While the solution technically works, is is not to be used in a production environment.
+This solves the challenge, but I wouldn't use this pattern in real code. The whole point of marking something readonly is to prevent mutations - but this technique specifically bypasses that protection. It's a clever workaround, not a best practice.
