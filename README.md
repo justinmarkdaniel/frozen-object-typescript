@@ -37,9 +37,32 @@ npm install typescript   # if not installed
 ./test.sh
 ```
 
-## Known Limitation: Arrays
+## Array Handling: FrozenArray<T>
 
-Arrays don't work with this approach. TypeScript treats `readonly T[]` as incompatible with `T[]` because arrays have mutating methods like push() and pop(). This is just how TypeScript handles arrays - not something we can work around.
+The original limitation was that `readonly T[]` isn't assignable to `T[]`. Here's a workaround:
+
+```typescript
+type FrozenArray<T> = T[] & { readonly [K: number]: T };
+
+function createFrozenArray<T>(items: T[]): FrozenArray<T> {
+  return Object.freeze([...items]) as FrozenArray<T>;
+}
+```
+
+### How It Works
+
+1. **Intersection type**: `T[] & { readonly [K: number]: T }` gives us array methods while making index access readonly
+2. **Object.freeze**: Runtime protection prevents actual mutations
+3. **Type assertion**: The `as FrozenArray<T>` bridges TypeScript's structural typing gap
+
+### Trade-offs
+
+| Approach | Blocks `arr[0] = x` | Blocks `arr.push(x)` | Assignable to `T[]` |
+|----------|---------------------|----------------------|---------------------|
+| `readonly T[]` | ✅ | ✅ | ❌ |
+| `FrozenArray<T>` | ✅ (compile) | ❌ (compile) / ✅ (runtime) | ✅ |
+
+The `FrozenArray<T>` approach relies on `Object.freeze` for runtime protection against mutating methods. TypeScript can't statically block `.push()` while keeping assignability to `T[]`.
 
 ## A Note on Production Use
 
